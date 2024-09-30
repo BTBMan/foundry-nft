@@ -2,18 +2,14 @@
 pragma solidity ^0.8.27;
 
 import {Script, console} from "forge-std/Script.sol";
-import {Counter} from "../src/Counter.sol";
+import {BasicNft} from "../src/BasicNft.sol";
 
-contract CounterScript is Script {
-    Counter public counter;
-
+contract BasicNftScript is Script {
     function setUp() public {}
 
-    function run() public {
+    function run() public returns (BasicNft basicNft) {
         vm.startBroadcast();
-
-        counter = new Counter();
-
+        basicNft = new BasicNft();
         vm.stopBroadcast();
     }
 }
