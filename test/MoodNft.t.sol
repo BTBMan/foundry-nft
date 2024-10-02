@@ -24,9 +24,23 @@ contract MoodNftTest is Test {
         assertEq(moodNftScript.svgToImageURI(svg), expectedURI);
     }
 
-    // function testViewTokenURI() public {
-    //     vm.prank(user);
-    //     moodNft.mintNft();
-    //     console.log(moodNft.tokenURI(0));
-    // }
+    function testViewTokenURI() public {
+        vm.prank(user);
+        moodNft.mintNft();
+
+        assertNotEq(moodNft.tokenURI(0), "");
+    }
+
+    function testFlipTokenToSad() public {
+        vm.prank(user);
+        moodNft.mintNft();
+
+        vm.prank(user);
+        moodNft.flipMood(0);
+
+        assert(
+            keccak256(abi.encodePacked(moodNft.tokenURI(0)))
+                == keccak256(abi.encodePacked(moodNft._tokenURI(moodNftScript.svgToImageURI(moodNftScript.sadSvg()))))
+        );
+    }
 }

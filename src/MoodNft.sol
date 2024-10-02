@@ -35,14 +35,25 @@ contract MoodNft is ERC721 {
         }
         if (s_tokenIdToMood[tokenId] == Mood.Happy) {
             s_tokenIdToMood[tokenId] = Mood.Sad;
-        }
-        if (s_tokenIdToMood[tokenId] == Mood.Sad) {
+        } else if (s_tokenIdToMood[tokenId] == Mood.Sad) {
             s_tokenIdToMood[tokenId] = Mood.Happy;
         }
     }
 
     function _baseURI() internal pure override returns (string memory) {
         return "data:application/json;base64,";
+    }
+
+    function _tokenURI(string memory imageURI) public view returns (string memory) {
+        bytes memory dataURI = abi.encodePacked(
+            '{"name":"',
+            name(),
+            '","description":"An NFT that reflects the owners mood!","image":"',
+            imageURI,
+            '","attributes":[{"trait_type":"moodiness","value":100}]}'
+        );
+
+        return string(abi.encodePacked(_baseURI(), Base64.encode(dataURI)));
     }
 
     function tokenURI(uint256 tokenId) public view override returns (string memory) {
@@ -53,14 +64,6 @@ contract MoodNft is ERC721 {
             imageURI = s_sadSvgUri;
         }
 
-        bytes memory dataURI = abi.encodePacked(
-            '{"name":"',
-            name(),
-            '","description":"An NFT that reflects the owners mood!","image":"',
-            imageURI,
-            '","attributes":[{"trait_type":"moodiness","value":100}]}'
-        );
-
-        return string(abi.encodePacked(_baseURI(), Base64.encode(dataURI)));
+        return _tokenURI(imageURI);
     }
 }
